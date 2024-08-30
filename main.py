@@ -6,8 +6,9 @@ from PyQt5.QtCore import Qt
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        screen_size = QApplication.screens()[0].size()
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setGeometry(100, 100, 140, 50)
+        self.setGeometry(int(screen_size.width()/2), int(screen_size.height()/2), 350, 150)
         self.bg_widget = QWidget(self)
         self.palette = QPalette()
         self.palette.setColor(QPalette.Background, QColor(0, 255, 0))  
@@ -21,13 +22,13 @@ class MainWindow(QMainWindow):
 
         self.color_input = QLineEdit()
         self.color_input.textChanged.connect(self.change_color)
-        self.color_input.setPlaceholderText("r g b")
+        self.color_input.setPlaceholderText("r g b ")
 
         self.size_input = QLineEdit()
         self.size_input.textChanged.connect(self.change_size)
         self.size_input.setPlaceholderText("w h")
 
-        self.confirm_button = QPushButton('Confirm')
+        self.confirm_button = QPushButton('ok')
         self.confirm_button.clicked.connect(self.hide_all)
      
         self.color_label = QLabel("color:")
@@ -38,7 +39,6 @@ class MainWindow(QMainWindow):
         self.h_layout.addWidget(self.size_label)
         self.h_layout.addWidget(self.size_input)
         self.h_layout.addWidget(self.confirm_button)
-
 
     def change_color(self, event):
         color_str = self.color_input.text()
@@ -64,6 +64,13 @@ class MainWindow(QMainWindow):
         self.confirm_button.setVisible(False)
         self.color_label.setVisible(False)
         self.size_label.setVisible(False)
+        size_str = self.size_input.text()
+        if self.valid_size(size_str):
+            sizes = size_str.split(' ')
+            w = int(sizes[0])
+            h = int(sizes[1])
+            self.resize(w, h)
+        
     
     def valid_color(self, color_str):
         colors = color_str.split(' ')
